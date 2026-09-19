@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Orçamentos Recebidos | Depois do Balcão</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .admin-body {
+      background-color: #F1F5F9;
+      min-height: 100vh;
+    }
+    .admin-header {
+      background-color: var(--brand-navy);
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--brand-navy-border);
+      color: #fff;
+    }
+    .admin-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin: 2rem 0;
+    }
+    .stat-box {
+      background: #fff;
+      border: 1px solid var(--brand-border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+    .stat-label {
+      font-size: 0.8125rem;
+      color: var(--brand-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .stat-val {
+      font-size: 1.875rem;
+      font-weight: 800;
+      color: var(--brand-navy);
+      margin-top: 0.25rem;
+    }
+    .admin-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .search-input {
+      padding: 0.625rem 1rem;
+      border: 1.5px solid var(--brand-border);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      min-width: 280px;
+    }
+    .lead-card {
+      background: #fff;
+      border: 1px solid var(--brand-border);
+      border-radius: 14px;
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+    }
+    .lead-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.875rem 1.5rem;
+      margin-top: 1rem;
+    }
+    .lead-field-title {
+      font-size: 0.75rem;
+      color: var(--brand-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .lead-field-val {
+      font-size: 0.9375rem;
+      color: var(--brand-text);
+      font-weight: 500;
+    }
+    .lead-files-panel {
+      border-left: 1px solid var(--brand-border);
+      padding-left: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .media-thumb-box {
+      border: 1px solid var(--brand-border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #F8FAFC;
+      text-align: center;
+      padding: 0.5rem;
+    }
+    .media-thumb-img {
+      width: 100%;
+      height: 120px;
+      object-fit: contain;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .media-thumb-img:hover {
+      transform: scale(1.03);
+    }
+    .wa-chat-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #25D366;
+      color: #fff;
+      font-weight: 700;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      text-decoration: none;
+      margin-top: 0.5rem;
+    }
+    .wa-chat-btn:hover {
+      background: #1EBE5B;
+    }
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 20, 38, 0.85);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .modal-backdrop.is-open {
+      display: flex;
+    }
+    .modal-img-content {
+      max-width: 90vw;
+      max-height: 85vh;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .modal-close-btn {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      color: #fff;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      font-size: 1.5rem;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    @media (max-width: 768px) {
+      .lead-card {
+        grid-template-columns: 1fr;
+      }
+      .lead-files-panel {
+        border-left: none;
+        border-top: 1px solid var(--brand-border);
+        padding-left: 0;
+        padding-top: 1.25rem;
+      }
+      .lead-info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="admin-body">
+
+  <header class="admin-header">
+    <div class="container admin-nav">
+      <div style="display: flex; align-items: center; gap: 0.875rem;">
+        <img src="assets/logo.png" alt="Logo" width="40" height="40" style="border-radius: 6px;">
+        <div>
+          <h1 style="font-size: 1.125rem; font-weight: 800; line-height: 1.2;">Depois do Balcão</h1>
+          <span style="font-size: 0.75rem; color: var(--brand-yellow); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;">Painel de Orçamentos e Leads</span>
+        </div>
+      </div>
+      <div>
+        <a href="index.html" class="btn btn--secondary" style="color: #fff; border-color: rgba(255,255,255,0.2); font-size: 0.8125rem; padding: 0.5rem 1rem;">
+          Ver Landing Page
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+    
+    <!-- Métricas -->
+    <div class="admin-stats">
+      <div class="stat-box">
+        <span class="stat-label">Total de Solicitações</span>
+        <div class="stat-val" id="stat-total">0</div>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Já Possuem Logo (Sim)</span>
+        <div class="stat-val" id="stat-logos">0</div>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Precisam de Logo (Não)</span>
+        <div class="stat-val" id="stat-sem-logo">0</div>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Origem Principal</span>
+        <div class="stat-val" id="stat-origem" style="font-size: 1.25rem; margin-top: 0.5rem;">Direto / YouTube</div>
+      </div>
+    </div>
+
+    <!-- Barra de Ações -->
+    <div class="admin-actions">
+      <input type="text" id="search-box" class="search-input" placeholder="Buscar por nome, produto, embalagem ou WhatsApp...">
+      <div style="display: flex; gap: 0.75rem;">
+        <button type="button" class="btn btn--primary" id="btn-export-csv" style="font-size: 0.875rem; padding: 0.625rem 1.25rem;">
+          Exportar CSV (Excel)
+        </button>
+        <button type="button" class="btn btn--secondary" id="btn-clear-leads" style="font-size: 0.875rem; padding: 0.625rem 1.25rem; color: #DC2626; border-color: #FCA5A5;">
+          Limpar Lista
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista de Leads -->
+    <div id="leads-list-container">
+      <!-- Injetado dinamicamente via JS -->
+    </div>
+
+  </main>
+
+  <!-- Modal para visualização de fotos anexadas em alta resolução -->
+  <div id="image-modal" class="modal-backdrop">
+    <button type="button" class="modal-close-btn" id="btn-close-modal">&times;</button>
+    <img id="modal-full-img" class="modal-img-content" src="" alt="Foto em tamanho grande">
+  </div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'depois_do_balcao_leads';
+
+      function loadLeads() {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function render() {
+        const leads = loadLeads().reverse(); // Mais recentes primeiro
+        const container = document.getElementById('leads-list-container');
+        const statTotal = document.getElementById('stat-total');
+        const statLogos = document.getElementById('stat-logos');
+        const statSemLogo = document.getElementById('stat-sem-logo');
+
+        statTotal.textContent = leads.length;
+        statLogos.textContent = leads.filter(l => l.possui_logo === 'Sim' || l.arquivo_logo_base64).length;
+        statSemLogo.textContent = leads.filter(l => l.possui_logo === 'Não').length;
+
+        if (leads.length === 0) {
+          container.innerHTML = `
+            <div style="background: #fff; border: 1px dashed var(--brand-border); border-radius: 12px; padding: 3.5rem 2rem; text-align: center;">
+              <p style="font-size: 1.125rem; color: var(--brand-muted); font-weight: 600;">Nenhuma solicitação de orçamento registrada ainda neste navegador.</p>
+              <p style="font-size: 0.875rem; color: var(--brand-muted); margin-top: 0.5rem;">Preencha o formulário na página inicial para ver os dados aparecerem aqui em tempo real!</p>
+              <a href="index.html#formulario" class="btn btn--primary" style="margin-top: 1.5rem;">Testar Formulário</a>
+            </div>
+          `;
+          return;
+        }
+
+        const filterTerm = document.getElementById('search-box').value.toLowerCase().trim();
+        const filtered = leads.filter(l => {
+          if (!filterTerm) return true;
+          return (l.nome && l.nome.toLowerCase().includes(filterTerm)) ||
+                 (l.produto && l.produto.toLowerCase().includes(filterTerm)) ||
+                 (l.embalagem && l.embalagem.toLowerCase().includes(filterTerm)) ||
+                 (l.whatsapp && l.whatsapp.includes(filterTerm));
+        });
+
+        container.innerHTML = filtered.map(lead => {
+          const dateFormatted = new Date(lead.data_hora).toLocaleString('pt-BR');
+          const cleanPhone = (lead.whatsapp_numeros || lead.whatsapp || '').replace(/\D/g, '');
+          const waLink = `https://wa.me/55${cleanPhone}`;
+          const hasFiles = Boolean(lead.arquivo_embalagem_base64 || lead.arquivo_logo_base64);
+
+          return `
+            <article class="lead-card" style="${hasFiles ? '' : 'grid-template-columns: 1fr;'}">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem;">
+                  <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--brand-navy);">${lead.nome}</h2>
+                  <span style="font-size: 0.8125rem; color: var(--brand-muted);">${dateFormatted}</span>
+                </div>
+
+                <a href="${waLink}" target="_blank" class="wa-chat-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.699c.971.53 2.012.825 2.802.825 3.182 0 5.768-2.586 5.768-5.766 0-3.18-2.586-5.811-5.774-5.811zm8.016 5.766c0 4.417-3.593 8.01-8.016 8.01-1.393 0-2.695-.36-3.834-1.002l-4.227 1.109 1.127-4.121c-.72-1.206-1.136-2.607-1.136-4.096 0-4.417 3.593-8.01 8.016-8.01s8.07 3.593 8.07 8.01z"/></svg>
+                  Conversar no WhatsApp (${lead.whatsapp})
+                </a>
+
+                <div class="lead-info-grid">
+                  <div>
+                    <span class="lead-field-title">Produto que Vende</span>
+                    <div class="lead-field-val">${lead.produto}</div>
+                  </div>
+                  <div>
+                    <span class="lead-field-title">Tipo de Embalagem</span>
+                    <div class="lead-field-val">${lead.embalagem} ${lead.embalagem_outro_detalhe ? '(' + lead.embalagem_outro_detalhe + ')' : ''}</div>
+                  </div>
+                  <div>
+                    <span class="lead-field-title">Tamanho do Rótulo</span>
+                    <div class="lead-field-val">${lead.sabe_tamanho === 'Sim' ? (lead.largura_cm + 'cm x ' + lead.altura_cm + 'cm') : 'Precisa de orientação'}</div>
+                  </div>
+                  <div>
+                    <span class="lead-field-title">Quantidade Pretendida</span>
+                    <div class="lead-field-val">${lead.quantidade}</div>
+                  </div>
+                  <div>
+                    <span class="lead-field-title">Possui Logomarca?</span>
+                    <div class="lead-field-val"><strong>${lead.possui_logo}</strong></div>
+                  </div>
+                  <div>
+                    <span class="lead-field-title">CEP para Destino</span>
+                    <div class="lead-field-val">${lead.cep}</div>
+                  </div>
+                  ${lead.observacao ? `
+                    <div style="grid-column: span 2;">
+                      <span class="lead-field-title">Observação do Cliente</span>
+                      <div class="lead-field-val" style="background: #F8FAFC; padding: 0.625rem; border-radius: 6px; font-size: 0.875rem;">${lead.observacao}</div>
+                    </div>
+                  ` : ''}
+                  ${lead.atribuicao && (lead.atribuicao.src || lead.atribuicao.utm_source) ? `
+                    <div style="grid-column: span 2;">
+                      <span class="lead-field-title">Origem / Rastreamento</span>
+                      <div style="font-size: 0.75rem; color: var(--brand-muted); font-family: monospace;">
+                        src: ${lead.atribuicao.src || '-'} | utm_source: ${lead.atribuicao.utm_source || '-'} | video: ${lead.atribuicao.video || '-'}
+                      </div>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+
+              ${hasFiles ? `
+                <!-- Painel de Anexos Anteriores (se houver) -->
+                <div class="lead-files-panel">
+                  <span class="lead-field-title">Anexos Anteriores</span>
+                  
+                  ${lead.arquivo_embalagem_base64 ? `
+                    <div class="media-thumb-box">
+                      <span style="font-size: 0.6875rem; font-weight: 700; color: var(--brand-navy); display: block; margin-bottom: 0.25rem;">Foto da Embalagem</span>
+                      <img src="${lead.arquivo_embalagem_base64}" class="media-thumb-img img-preview-trigger" alt="Foto Embalagem" title="Clique para ampliar">
+                      <span style="font-size: 0.6875rem; color: var(--brand-muted); display: block; margin-top: 0.25rem;">${lead.arquivo_embalagem || 'Foto'}</span>
+                    </div>
+                  ` : ''}
+
+                  ${lead.arquivo_logo_base64 ? `
+                    <div class="media-thumb-box">
+                      <span style="font-size: 0.6875rem; font-weight: 700; color: var(--brand-navy); display: block; margin-bottom: 0.25rem;">Arquivo da Logo</span>
+                      ${lead.arquivo_logo_base64.startsWith('data:image/') ? `
+                        <img src="${lead.arquivo_logo_base64}" class="media-thumb-img img-preview-trigger" alt="Logo" title="Clique para ampliar">
+                      ` : `
+                        <a href="${lead.arquivo_logo_base64}" download="${lead.arquivo_logo || 'logo.pdf'}" class="btn btn--secondary" style="font-size: 0.75rem; padding: 0.5rem;">Baixar Arquivo (${lead.arquivo_logo})</a>
+                      `}
+                      <span style="font-size: 0.6875rem; color: var(--brand-muted); display: block; margin-top: 0.25rem;">${lead.arquivo_logo || 'Logo'}</span>
+                    </div>
+                  ` : ''}
+                </div>
+              ` : ''}
+            </article>
+          `;
+        }).join('');
+
+        // Listeners para abrir modal de imagem
+        document.querySelectorAll('.img-preview-trigger').forEach(img => {
+          img.addEventListener('click', () => {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-full-img');
+            modalImg.src = img.src;
+            modal.classList.add('is-open');
+          });
+        });
+      }
+
+      // Fechar modal
+      document.getElementById('btn-close-modal').addEventListener('click', () => {
+        document.getElementById('image-modal').classList.remove('is-open');
+      });
+      document.getElementById('image-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'image-modal') {
+          document.getElementById('image-modal').classList.remove('is-open');
+        }
+      });
+
+      // Busca
+      document.getElementById('search-box').addEventListener('input', render);
+
+      // Limpar leads
+      document.getElementById('btn-clear-leads').addEventListener('click', () => {
+        if (confirm('Tem certeza que deseja apagar o histórico de leads salvos neste navegador?')) {
+          localStorage.removeItem(STORAGE_KEY);
+          render();
+        }
+      });
+
+      // Exportar CSV
+      document.getElementById('btn-export-csv').addEventListener('click', () => {
+        const leads = loadLeads();
+        if (leads.length === 0) {
+          alert('Nenhum lead para exportar.');
+          return;
+        }
+
+        const headers = ['Data', 'Nome', 'WhatsApp', 'Produto', 'Embalagem', 'Tamanho', 'Quantidade', 'Possui Logo', 'CEP', 'Observacao', 'Origem'];
+        const rows = leads.map(l => [
+          new Date(l.data_hora).toLocaleString('pt-BR'),
+          `"${(l.nome || '').replace(/"/g, '""')}"`,
+          `"${l.whatsapp || ''}"`,
+          `"${(l.produto || '').replace(/"/g, '""')}"`,
+          `"${l.embalagem || ''}"`,
+          `"${l.sabe_tamanho === 'Sim' ? (l.largura_cm + 'x' + l.altura_cm) : 'Orientacao'}"`,
+          `"${l.quantidade || ''}"`,
+          `"${l.possui_logo || ''}"`,
+          `"${l.cep || ''}"`,
+          `"${(l.observacao || '').replace(/"/g, '""')}"`,
+          `"${l.atribuicao ? (l.atribuicao.src || l.atribuicao.utm_source || '') : ''}"`
+        ]);
+
+        const csvContent = '\uFEFF' + [headers.join(';'), ...rows.map(r => r.join(';'))].join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `leads_depois_do_balcao_${Date.now()}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      // Inicializa
+      render();
+    })();
+  </script>
+</body>
+</html>
