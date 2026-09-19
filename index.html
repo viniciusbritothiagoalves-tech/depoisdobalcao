@@ -21,7 +21,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Estilos da Página -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=5.0">
 
   <!-- ======================================================================
        TAGS DE ANALYTICS / PIXEL (PLACEHOLDERS)
@@ -31,71 +31,64 @@
 </head>
 <body>
 
-  <!-- ======================================================================
-       HEADER / CABEÇALHO
-       ====================================================================== -->
-  <header class="site-header" role="banner">
-    <div class="container header-inner">
-      <a href="#" class="brand-link" aria-label="Depois do Balcão - Página Inicial">
-        <img src="assets/logo.png" alt="Logo Depois do Balcão" class="brand-logo-img" width="44" height="44">
-        <div class="brand-text-block">
-          <span class="brand-name">Depois do Balcão</span>
-          <span class="brand-descriptor">Rótulos Personalizados</span>
-        </div>
-      </a>
-      <div class="header-cta">
-        <a href="#formulario" class="btn btn--primary header-cta-btn" id="header-cta-btn">
-          <span class="btn-text-desktop">SOLICITAR ORÇAMENTO</span>
-          <span class="btn-text-mobile">Orçamento</span>
-        </a>
-      </div>
-    </div>
-  </header>
-
   <main id="conteudo-principal">
 
     <!-- ====================================================================
-         HERO SECTION
+         HERO SECTION (COM IDENTIFICAÇÃO DA MARCA INTEGRADA E FLUIDA)
          ==================================================================== -->
     <section class="hero-section" aria-labelledby="hero-title">
-      <div class="container hero-grid">
-        <div class="hero-content">
-          <div class="hero-tagline">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-            </svg>
-            <span>Rótulos e Adesivos para Embalagens</span>
-          </div>
-          
-          <h1 id="hero-title" class="hero-headline">
-            Rótulos personalizados para a embalagem do seu produto.
-          </h1>
-          
-          <p class="hero-subheadline">
-            Sua marca continua presente mesmo depois que o produto sai do balcão.
-          </p>
-          
-          <p class="hero-body">
-            Conte o que você precisa e solicite um orçamento para o seu negócio. Se ainda não souber o tamanho ideal ou não tiver a arte pronta, isso pode ser definido antes da produção.
-          </p>
-          
-          <div class="hero-action-group">
-            <a href="#formulario" class="btn btn--primary hero-cta" id="hero-cta-btn">
-              SOLICITAR MEU ORÇAMENTO
-            </a>
-            <span class="hero-microcopy">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-              </svg>
-              Leva menos de 2 minutos.
-            </span>
+      <div class="container">
+        
+        <!-- Identificação da Marca Integrada no Topo (Livre de sobreposição) -->
+        <div class="hero-brand-bar">
+          <div class="brand-identity">
+            <img src="assets/logo.png" alt="Logo Depois do Balcão" class="brand-logo-img" width="46" height="46">
+            <div class="brand-text-block">
+              <span class="brand-name">Depois do Balcão</span>
+              <span class="brand-descriptor">Rótulos Personalizados</span>
+            </div>
           </div>
         </div>
 
-        <div class="hero-visual">
-          <div class="hero-image-wrapper">
-            <img src="assets/hero-packaging.jpg" alt="Exemplos de embalagens com rótulos personalizados: saco kraft, pote de vidro, caixa de doces e pote transparente" class="hero-image" width="600" height="448">
+        <div class="hero-grid">
+          <div class="hero-content">
+            <div class="hero-tagline">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+              </svg>
+              <span>Rótulos e Adesivos para Embalagens</span>
+            </div>
+            
+            <h1 id="hero-title" class="hero-headline">
+              Rótulos personalizados para a embalagem do seu produto.
+            </h1>
+            
+            <p class="hero-subheadline">
+              Sua marca continua presente mesmo depois que o produto sai do balcão.
+            </p>
+            
+            <p class="hero-body">
+              Conte o que você precisa e solicite um orçamento para o seu negócio. Se ainda não souber o tamanho ideal ou não tiver a arte pronta, isso pode ser definido antes da produção.
+            </p>
+            
+            <div class="hero-action-group">
+              <a href="#formulario" class="btn btn--primary hero-cta" id="hero-cta-btn">
+                SOLICITAR MEU ORÇAMENTO
+              </a>
+              <span class="hero-microcopy">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                Leva menos de 2 minutos.
+              </span>
+            </div>
+          </div>
+
+          <div class="hero-visual">
+            <div class="hero-image-wrapper">
+              <img src="assets/hero-packaging.jpg" alt="Exemplos de embalagens com rótulos personalizados: saco kraft, pote de vidro, caixa de doces e pote transparente" class="hero-image" width="600" height="448">
+            </div>
           </div>
         </div>
       </div>
@@ -619,7 +612,7 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/config.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/config.js?v=5.0"></script>
+  <script src="js/app.js?v=5.0"></script>
 </body>
 </html>
