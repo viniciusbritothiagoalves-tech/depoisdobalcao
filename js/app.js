@@ -767,6 +767,33 @@
   }
 
   /* ========================================================================
+     15. ANIMAÇÕES LEVES DE ROLAGEM (INTERSECTION OBSERVER)
+     ======================================================================== */
+  function initScrollAnimations() {
+    const animatedElements = document.querySelectorAll('.fade-in-trigger');
+    if (!animatedElements.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+      animatedElements.forEach(el => el.classList.add('is-animated'));
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-animated');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -30px 0px'
+    });
+
+    animatedElements.forEach(el => observer.observe(el));
+  }
+
+  /* ========================================================================
      INICIALIZAÇÃO NO CARREGAMENTO DO DOM
      ======================================================================== */
   document.addEventListener('DOMContentLoaded', () => {
@@ -780,6 +807,7 @@
     checkTallyIntegration();
     renderTestimonialsIfPresent();
     injectFooterData();
+    initScrollAnimations();
   });
 
 })();
