@@ -358,7 +358,7 @@
           <div id="tally-wrapper" class="tally-embed-container" style="display: none;"></div>
 
           <!-- Formulário Nativo Completo de Qualificação -->
-          <form id="orcamento-form" class="native-form" novalidate>
+          <form id="orcamento-form" class="native-form" action="javascript:void(0);" method="POST" novalidate>
             
             <!-- Hidden Fields para Atribuição de Origem -->
             <input type="hidden" name="utm_source" id="utm_source" value="">
@@ -537,10 +537,10 @@
             <div class="form-question-card">
               <div class="form-question-header">
                 <label for="campo-cep" class="form-question-title">CEP para entrega</label>
-                <span class="badge-required">* Obrigatório</span>
+                <span class="badge-optional">Opcional</span>
               </div>
-              <input type="text" id="campo-cep" name="cep" class="form-input" placeholder="00000-000" maxlength="9" required inputmode="numeric">
-              <span class="form-helper">Usaremos o CEP para considerar o destino no orçamento.</span>
+              <input type="text" id="campo-cep" name="cep" class="form-input" placeholder="00000-000" maxlength="9" inputmode="numeric">
+              <span class="form-helper">Se souber seu CEP agora, informe para calcularmos o frete. Caso contrário, combinamos pelo WhatsApp.</span>
             </div>
 
             <!-- CAMPO 11: Observação -->
@@ -555,13 +555,16 @@
             <!-- LGPD / Consentimento -->
             <div class="consent-card">
               <label class="consent-label">
-                <input type="checkbox" id="campo-consentimento" name="consentimento" class="consent-checkbox" required>
+                <input type="checkbox" id="campo-consentimento" name="consentimento" class="consent-checkbox" checked required>
                 <span>
                   Concordo em fornecer estes dados para que entrem em contato comigo sobre esta solicitação de orçamento, conforme a 
                   <a href="politica-de-privacidade.html" target="_blank" rel="noopener noreferrer" class="consent-link" id="link-politica-form">Política de Privacidade</a>.
                 </span>
               </label>
             </div>
+
+            <!-- Mensagem de feedback de validação ou status inline -->
+            <div id="form-feedback-msg" style="display: none; padding: 0.875rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem; text-align: center;" role="alert"></div>
 
             <!-- Botão de Envio -->
             <div class="form-actions">

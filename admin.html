@@ -238,6 +238,19 @@
       </div>
     </div>
 
+    <!-- Aviso de Funcionamento em Tempo Real -->
+    <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span style="font-size: 1.25rem;">⚡</span>
+        <p style="font-size: 0.875rem; color: #1E40AF; margin: 0;">
+          <strong>Atualização em Tempo Real:</strong> Este painel atualiza automaticamente as capturas a cada 2 segundos.
+        </p>
+      </div>
+      <button type="button" class="btn btn--secondary" id="btn-add-test-lead" style="font-size: 0.8125rem; padding: 0.4rem 0.875rem; color: #1E40AF; border-color: #BFDBFE; background: #fff;">
+        + Gerar Lead de Teste
+      </button>
+    </div>
+
     <!-- Lista de Leads -->
     <div id="leads-list-container">
       <!-- Injetado dinamicamente via JS -->
@@ -257,10 +270,16 @@
 
       function loadLeads() {
         try {
-          return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-        } catch (e) {
-          return [];
-        }
+          const fromLocal = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+          if (Array.isArray(fromLocal) && fromLocal.length > 0) return fromLocal;
+        } catch (e) {}
+
+        try {
+          const fromSession = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '[]');
+          if (Array.isArray(fromSession) && fromSession.length > 0) return fromSession;
+        } catch (e) {}
+
+        return [];
       }
 
       function render() {
@@ -279,7 +298,9 @@
             <div style="background: #fff; border: 1px dashed var(--brand-border); border-radius: 12px; padding: 3.5rem 2rem; text-align: center;">
               <p style="font-size: 1.125rem; color: var(--brand-muted); font-weight: 600;">Nenhuma solicitação de orçamento registrada ainda neste navegador.</p>
               <p style="font-size: 0.875rem; color: var(--brand-muted); margin-top: 0.5rem;">Preencha o formulário na página inicial para ver os dados aparecerem aqui em tempo real!</p>
-              <a href="index.html#formulario" class="btn btn--primary" style="margin-top: 1.5rem;">Testar Formulário</a>
+              <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
+                <a href="index.html#formulario" class="btn btn--primary">Testar Formulário</a>
+              </div>
             </div>
           `;
           return;
@@ -299,12 +320,19 @@
           const cleanPhone = (lead.whatsapp_numeros || lead.whatsapp || '').replace(/\D/g, '');
           const waLink = `https://wa.me/55${cleanPhone}`;
           const hasFiles = Boolean(lead.arquivo_embalagem_base64 || lead.arquivo_logo_base64);
+          const isDraft = lead.status === 'Rascunho';
+          const statusBadge = isDraft 
+            ? `<span style="background: #FEF3C7; color: #D97706; font-size: 0.6875rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 9999px; border: 1px solid #FCD34D;">Rascunho</span>`
+            : `<span style="background: #ECFDF5; color: #059669; font-size: 0.6875rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 9999px; border: 1px solid #6EE7B7;">Concluído</span>`;
 
           return `
             <article class="lead-card" style="${hasFiles ? '' : 'grid-template-columns: 1fr;'}">
               <div>
-                <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem;">
-                  <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--brand-navy);">${lead.nome}</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                  <div style="display: flex; align-items: center; gap: 0.625rem;">
+                    <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--brand-navy); margin: 0;">${lead.nome}</h2>
+                    ${statusBadge}
+                  </div>
                   <span style="font-size: 0.8125rem; color: var(--brand-muted);">${dateFormatted}</span>
                 </div>
 
@@ -449,6 +477,41 @@
         a.click();
         URL.revokeObjectURL(url);
       });
+
+      // Botão para gerar lead de teste
+      const btnAddTest = document.getElementById('btn-add-test-lead');
+      if (btnAddTest) {
+        btnAddTest.addEventListener('click', () => {
+          const testLead = {
+            id: 'lead_' + Date.now(),
+            status: 'Concluído',
+            data_hora: new Date().toISOString(),
+            nome: 'Cliente Exemplo (Teste)',
+            whatsapp: '(38) 99863-6150',
+            whatsapp_numeros: '38998636150',
+            produto: 'Doces Caseiros e Geleias Artesanais',
+            embalagem: 'Pote',
+            sabe_tamanho: 'Sim',
+            largura_cm: '6',
+            altura_cm: '6',
+            quantidade: '250 unidades',
+            possui_logo: 'Sim',
+            cep: '39400-000',
+            observacao: 'Lead de demonstração criado para testar visualização do painel.',
+            atribuicao: { src: 'painel_admin', utm_source: 'teste_local' }
+          };
+          const current = loadLeads();
+          current.push(testLead);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+          try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(current)); } catch(e){}
+          render();
+        });
+      }
+
+      // Sincronização em tempo real (storage listener + custom event + polling leve)
+      window.addEventListener('storage', render);
+      window.addEventListener('leads_updated', render);
+      setInterval(render, 2500);
 
       // Inicializa
       render();
